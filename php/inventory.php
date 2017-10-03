@@ -4,95 +4,159 @@
  * User: nadiahasan
  * Date: 8/17/17
  * Time: 8:32 PM
+ *  Description: This file displays inventory list options.
  */
 
+session_start();
+echo $_SESSION['username'];
+
+$servername = "localhost";
+$username = "root";
+$password = "root";
+$dbname = "INVENTORY";
+
+// Create a connection to mysql server
+$conn = new mysqli($servername, $username, $password,$dbname);
+
+// Check if connection is not successful
+if ($conn->connect_error) {
+    die("Connection to serverfailed: " . $conn->connect_error);
+}
+
+$sql_command="select * from USERS where USERNAME='".$_SESSION['username']."';";
+
+$result = $conn->query($sql_command); // submitting query to database
+
+
+include "topMenu.php";
+// Creating an sql query based on login information provided by user
+$sql_command="select TYPE from USERS where USERNAME='".$_SESSION["username"]."';";
+$result = $conn->query($sql_command);
+
+$row=$result->fetch_assoc();
+
+
+if($row['TYPE']==1){
+    include "adminMenu.php";
+}
 ?>
 
 
-<html>
-<head>
-    <style>
-        ul{
-            list-style-type: none;
-            margin: 0;
-            padding: 0%;
 
-        }
-        li{
-            display: inline;
-            margin-right: 2%;
+    <html>
+    <head>
+        <style>
+            ul {
+                list-style-type: none;
+                margin: 0;
+                padding: 0%;
 
-        }
-        li:hover{
-            background-color: coral;
-        }
+            }
 
-        label{
+            li {
+                display: inline;
+                margin-right: 2%;
 
-            font-size: larger;
+            }
 
-        }
+            li:hover {
+                background-color: coral;
+            }
 
-        input{
-            margin-bottom: 1%;
-            background-color: antiquewhite;
+            label {
 
-        }
+                font-size: larger;
 
-        #functionsList{
-            border: solid;
-            background-color: antiquewhite;
-            padding-right: 7%;
-            padding-left: 10%;
-            float: left;
-            margin-left: 25%;
+            }
 
-        }
-        body{
-            background-color: ghostwhite;
-        }
-        .list{
-            margin-bottom: 2%;
-            margin-top: 2%;
-            font-size: larger;
-            background-color: lightcoral;
+            input {
+                margin-bottom: 1%;
+                background-color: antiquewhite;
 
+            }
 
-        }
-    </style>
+            #functionsList {
+                border: solid;
+                background-color: antiquewhite;
+                padding-right: 7%;
+                padding-left: 10%;
+                float: left;
+                margin-left: 25%;
 
+            }
 
+            body {
+                background-color: ghostwhite;
+            }
 
-</head>
+            .inventoryList {
+                margin-bottom: 2%;
+                margin-top: 2%;
+                font-size: larger;
+                background-color: lightcoral;
 
-
-
-<body>
-
-<div id="navBar" style="background-color: darksalmon; padding: 1%;">
+            }
+        </style>
 
 
-    <ul>
-        <li style="margin-left: 0%; font-weight: bold; font-size: larger;">KidsPack</li>
-        <li><a href="main.php">Home</a></li>
-        <li style="float: right;">Search:<form method="post" action="main.php" style="display: inline;"><input type="text" name="searchText"/></form></li>
+    </head>
+
+
+    <body>
+
+
+    <p style="margin-top: 3%; margin-left: 30%; font-size: 200%; font-weight: bold;">Inventory Management</p>
+    <ul id="functionsList">
+
+
+        <form action="addDonations.php">
+            <input type="submit" class="inventoryList" value="Insert Donations" style="margin-top: 5%;">
+        </form>
+
+        <form action="addNewType.php">
+            <input type="submit" class="inventoryList" value="Add New Type" style="margin-top: 5%;">
+        </form>
+
+
+        <li>
+            <button class="inventoryList">Remove Items</button>
+        </li>
+        <br>
+        <li>
+            <button class="inventoryList">Manage Container Types</button>
+        </li>
+        <br>
+        <li>
+            <button class="inventoryList">View Items in Stock</button>
+        </li>
+        <br>
+        <li>
+            <button class="inventoryList">View Items out of Stock</button>
+        </li>
+        <br>
+        <li>
+            <button class="inventoryList">View Invenroty Contents</button>
+        </li>
+        <br>
+        <br>
+        <li>
+            <button class="inventoryList">Place Orders</button>
+        </li>
+        <br>
+        <li>
+            <button class="inventoryList">View Reports</button>
+        </li>
+        <br>
+        <li>
+            <button class="inventoryList" style="margin-bottom: 5%;">Inventory Backup</button>
+        </li>
+        <br>
 
     </ul>
-</div>
-<p style="margin-top: 3%; margin-left: 30%; font-size: 200%; font-weight: bold;">Inventory Management</p>
-<ul id="functionsList">
-    <li><button class="list" style="margin-top: 5%;">Add Items</button></li><br>
-    <li><button class="list">Remove Items</button></li><br>
-    <li><button class="list">View Items in Stock</button></li><br>
-    <li><button class="list">View Items out of Stock</button></li><br>
-    <li><button class="list">View Invenroty Contents</button></li><br>
-    <li><button class="list">Insert Donated Food Info</button></li><br>
-    <li><button class="list">Place Orders</button></li><br>
-    <li><button class="list">View Reports</button></li><br>
-    <li><button class="list" style="margin-bottom: 5%;">Inventory Backup</button></li><br>
-
-</ul>
 
 
-</body>
+    </body>
+
+    </html>
+
 

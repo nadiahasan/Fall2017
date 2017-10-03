@@ -6,26 +6,56 @@
  * Time: 8:48 PM
  */
 
-?>
+// Connecting php to mysql server
+session_start();
 
+// destroying any previous opened session
+session_unset();
+session_destroy();
+
+
+
+// Initializing some variables for connection to database server
+$servername = "localhost";
+$username = "root";
+$password = "root";
+$dbname = "INVENTORY";
+
+// Create a connection to mysql server
+$conn = new mysqli($servername, $username, $password,$dbname);
+
+// Check if connection is not successful
+if ($conn->connect_error) {
+    die("Connection to serverfailed: " . $conn->connect_error);
+}
+
+
+// Creating an sql query based on login information provided by user
+$sql_command="select PASSWORD from USERS where USERNAME='".$_POST["username"]."';";
+$result = $conn->query($sql_command);
+
+
+$row=$result->fetch_assoc();
+
+
+// adding a security level to the password by using password hashing
+if (password_verify($_POST['password'],$row['PASSWORD'])){
+
+    session_start();
+    $_SESSION['username']=$_POST['username'];
+
+
+}else{
+
+        echo
+        "invalid";
+}
+?>
 
 <html>
 <head>
     <style>
-        ul{
-            list-style-type: none;
-            margin: 0;
-            padding: 0%;
 
-        }
-        li{
-            display: inline;
-            margin-right: 2%;
-
-        }
-        li:hover{
-            background-color: coral;
-        }
 
         #signupDiv{
             border: solid;
@@ -45,41 +75,40 @@
             width: 25%;
             height: 40%;
             overflow: auto;
-
         }
 
 
     </style>
 
-
-
 </head>
-
-
 
 <body>
 
-<div id="navBar" style="background-color: darksalmon; padding: 1%;">
+
+<?php
 
 
-<ul>
-    <li style="margin-left: 0%; font-weight: bold; font-size: larger;">KidsPack</li>
-    <li><a href="main.php">Home</a></li>
-    <li style="float: right;">Search:<form method="post" action="main.php" style="display: inline;"><input type="text" name="searchText"/></form></li>
+include "topMenu.php";
+// Creating an sql query based on login information provided by user
+$sql_command="select TYPE from USERS where USERNAME='".$_SESSION["username"]."';";
+$result = $conn->query($sql_command);
 
-</ul>
-</div>
-<p style="margin-top: 3%; margin-left: 30%; font-size: 200%; font-weight: bold;">Welcome to KidsPack</p>
+$row=$result->fetch_assoc();
 
+
+if($row['TYPE']==1){
+    include "adminMenu.php";
+}
+?>
 
 <div id="outerDiv" style="float: none; overflow: auto; width: 100%;">
-
-
 
 <div id="signupDiv">
     <p style="margin-left: 25%; margin-top: 10%;">Create a New Account</p>
     <br/>
-    <button type="button" style="margin-left: 15%; width: 75%;">Sign Up Here</button>
+    <form action="signup.php">
+        <input type="submit" value="Sign up Here" style="margin-left: 15%; width: 75%;">
+    </form>
 
 </div>
 <div id="loginDiv">
@@ -90,25 +119,23 @@
         Log in to Your Account
     </p>
 
+
+
     <br/>
     <br>
 
 
     <form method="post" action="main.php">
         <label style="margin-left:5%;">Username: </label>
-        <input type="text" name="username">
+        <input name="username" required>
         <br>
         <br>
         <label style="margin-left:6%;">Password: </label>
-        <input type="text" name="password">
+        <input type="password" name="password" required>
         <br>
         <br>
-
         <input type="submit" name="submitButton" style="width: 40%; margin-left:30%; margin-right: 30%;"/>
-
-
     </form>
-
 
 
 </div>
@@ -120,13 +147,6 @@
 
 
 </html>
-
-
-
-
-<?php
-
-?>
 
 
 
